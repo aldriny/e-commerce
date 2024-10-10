@@ -4,6 +4,8 @@
 
 This is a full-stack e-commerce application built with **Laravel 11**. The project features two interfaces: an **admin side** and a **user side**. The user side accommodates both authenticated and non-authenticated users. The project can function as a complete full-stack application with views or can serve as an API for client-side use.
 
+Additionally, the project supports **localization**, allowing the app to be displayed in multiple languages.
+
 ## Features
 
 ### Admin Side
