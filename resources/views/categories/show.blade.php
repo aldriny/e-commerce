@@ -42,15 +42,28 @@
                             <div class="thumb">
                                 <div class="hover-content">
                                     <ul>
-                                        <li><a href=""><i class="fa fa-star"></i></a></li>
+                                        <li>
+                                            <form action="{{ route('favourites.store', $product->id) }}" method="POST" style="display: inline;">
+                                                @csrf
+                                                <button type="submit" style="border: none; padding: 15px;">
+                                                    @if(Auth::user() && Auth::user()->isFavourite($product->id))
+                                                        <i class="fa fa-heart" style="color: red;"></i> <!-- Filled star for favourite -->
+                                                    @else
+                                                        <i class="fa fa-heart-o"></i> <!-- Empty star for not favourite -->
+                                                    @endif
+                                                </button>
+                                            </form>
+                                        </li>         
                                         <li><a href="{{ route('products.show', $product->id) }}"><i class="fa fa-eye"></i></a></li>
-                                        <form action="{{ route('cart.store', $product->id) }}" method="POST" style="display: inline;">
-                                            @csrf
-                                            <input type="hidden" name="quantity" value="1">
-                                            <button type="submit" style=" border: none; padding: 15px;">
-                                                <i class="fa fa-shopping-cart"></i>
-                                            </button>
-                                        </form>
+                                        <li>
+                                            <form action="{{ route('cart.store', $product->id) }}" method="POST" style="display: inline;">
+                                                @csrf
+                                                <input type="hidden" name="quantity" value="1">
+                                                <button type="submit" style=" border: none; padding: 15px;">
+                                                    <i class="fa fa-shopping-cart"></i>
+                                                </button>
+                                            </form>
+                                        </li>
                                     </ul>
                                 </div>
                                 <img src="{{ asset($product->image) }}" alt="{{ $product->name }}">
