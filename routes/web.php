@@ -28,7 +28,7 @@ Route::controller(HomeController::class)->group(function(){
     Route::get('/search', 'search')->name('search');
 });
 
-Route::middleware('auth')->group(function(){
+Route::middleware('user_auth')->group(function(){
     Route::resource('cart', CartController::class)->only(['index','update', 'destroy']);
     Route::post('cart/{productId}',[CartController::class,'store'])->name('cart.store');
     

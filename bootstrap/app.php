@@ -13,10 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'auth' => \App\Http\Middleware\AuthMiddleware::class,
+            'user_auth' => \App\Http\Middleware\AuthMiddleware::class,
             'is_admin' => \App\Http\Middleware\AdminMiddleware::class,
             'api.admin' => \App\Http\Middleware\ApiMiddlewares\AdminMiddleware::class,
-            'api.auth' => \App\Http\Middleware\ApiMiddlewares\AuthMiddleware::class
         ]);
         $middleware->web(append:[
             \App\Http\Middleware\LocaleMiddleware::class

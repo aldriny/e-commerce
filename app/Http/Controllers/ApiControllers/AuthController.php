@@ -6,11 +6,12 @@ use Exception;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Helpers\ErrorHandler;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
-use App\Http\Requests\RegisterRequest;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\RegisterRequest;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -49,7 +50,8 @@ class AuthController extends Controller
                'message' => 'Invalid credentials',
             ],Response::HTTP_UNAUTHORIZED);                                  
         }
-        $token = Auth::user()->generateToken();
+        $user = Auth::user();
+        $token = $user->createToken('Api Token')->plainTextToken;
         return response()->json([
             'message' => 'User logged in successfully',
             'access_token' => $token,
@@ -63,14 +65,14 @@ class AuthController extends Controller
     public function logout()
     {
         try {
-            Auth::user()->revokeToken();
+            Auth::user()->tokens()->delete();
             return response()->json([
                 'message' => 'User logged out successfully',
             ], Response::HTTP_OK);
         } catch (Exception $e) {
+            Log::error('Logout error: ' . $e->getMessage());
+
             return $this->errorHandler->handleException($e);
         }
     }
-    
-
 }

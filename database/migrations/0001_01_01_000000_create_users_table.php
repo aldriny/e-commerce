@@ -18,10 +18,8 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->foreignId('current_team_id')->nullable();
             $table->string('image', 2048)->default('default.png');
             $table->enum('role',['admin','user'])->default('user');
-            $table->string('access_token',80)->nullable()->unique();
             $table->timestamps();
         });
 

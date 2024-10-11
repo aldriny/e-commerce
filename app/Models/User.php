@@ -64,19 +64,6 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-
-    public function generateToken()
-    {
-        $this->access_token = Str::random(64);
-        $this->save();
-        return $this->access_token;
-    }
-    
-    public function revokeToken()
-    {
-        $this->access_token = null;
-        $this->save();
-    }
     
     public function favourites()
     {
