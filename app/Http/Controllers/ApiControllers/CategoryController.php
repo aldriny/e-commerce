@@ -81,14 +81,20 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         try {
-            $category = Category::findOrFail($id);
-            $category->delete();
-            return response()->json([
-               'message' => 'Category deleted successfully'
-            ], Response::HTTP_OK);
+            $deleted = Category::where('id', $id)->delete();    
+            if ($deleted) {
+                return response()->json([
+                    'message' => 'Category deleted successfully'
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => 'Category not found'
+                ], Response::HTTP_NOT_FOUND);
+            }
         }
         catch (Exception $e) {
             return $this->errorHandler->handleException($e, 'Error deleting category');
         }
     }
+    
 }

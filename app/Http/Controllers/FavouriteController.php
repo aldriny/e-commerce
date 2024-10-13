@@ -35,10 +35,9 @@ class FavouriteController extends Controller
         try {
             $user = Auth::user();
             $product = Product::findOrFail($id);
-            $favourite = $user->favourites()->where('product_id',$product->id)->first();
 
-            if ($favourite) {
-                $favourite->delete();
+            if ($user->favourites()->where('product_id',$product->id)->exists()) {
+                $user->favourites()->detach($product->id);
                 return redirect()->back();
             } else {
                 $user->favourites()->attach($product->id);

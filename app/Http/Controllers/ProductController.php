@@ -6,6 +6,7 @@ use Exception;
 use App\Models\Product;
 use App\Helpers\ErrorHandler;
 use App\Http\Requests\CartRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class ProductController extends Controller
@@ -20,7 +21,8 @@ class ProductController extends Controller
     {
         try{
             $products = Product::paginate(9);
-            return view('products.index',['products' => $products]);
+            $favourites = Auth::check() ? Auth::user()->favourites()->pluck('product_id')->toArray() : [];
+            return view('products.index',['products' => $products,'favourites' => $favourites]);
         }
         catch(Exception $e){
             return $this->errorHandler->handleException($e,'Error fetching products');

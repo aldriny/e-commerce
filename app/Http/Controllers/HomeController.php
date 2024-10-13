@@ -26,7 +26,8 @@ class HomeController extends Controller
             try{
                 $categories = Category::select('id','name')->orderBy('created_at','desc')->limit(6)->get();
                 $products = Product::select('id','name', 'image', 'price')->orderBy('created_at','desc')->limit(9)->get();
-                return view('home',['categories' => $categories ,'products' => $products]);
+                $favourites = Auth::check() ? Auth::user()->favourites()->pluck('product_id')->toArray() : [];
+                return view('home',['categories' => $categories ,'products' => $products,'favourites' => $favourites]);
             }
             catch(Exception $e){
                 return $this->errorHandler->handleException($e,'Error fetching products');

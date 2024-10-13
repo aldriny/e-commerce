@@ -38,7 +38,7 @@ class CategoryController extends Controller
         try {
             $validatedData = $request->validated();
             Category::create($validatedData);
-            return redirect()->route('categories.index')->with('success', 'Category created successfully.');
+            return redirect()->route('admin.categories.index')->with('success', 'Category created successfully.');
         }
         catch (Exception $e) {
             return $this->errorHandler->handleException($e, 'Error creating category');
@@ -73,7 +73,7 @@ class CategoryController extends Controller
             $validatedData = $request->validated();
             $category = Category::findorFail($id);
             $category->update($validatedData);
-            return redirect()->route('categories.index')->with('success', 'Category updated successfully.');
+            return redirect()->route('admin.categories.index')->with('success', 'Category updated successfully.');
         }
         catch (Exception $e) {
             return $this->errorHandler->handleException($e, 'Error updating category');
@@ -83,8 +83,8 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         try {
-            $category = Category::findorFail($id)->delete();
-            return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');
+            $category = Category::where('id',$id)->delete();
+            return redirect()->route('admin.categories.index')->with('success', 'Category deleted successfully.');
         }
         catch (Exception $e) {
             return $this->errorHandler->handleException($e, 'Error deleting category');

@@ -37,7 +37,7 @@
                                             <form action="{{ route('favourites.store', $product->id) }}" method="POST" style="display: inline;">
                                                 @csrf
                                                 <button type="submit" style="border: none; padding: 15px;">
-                                                    @if(Auth::user() && Auth::user()->isFavourite($product->id))
+                                                    @if(in_array($product->id, $favourites))
                                                         <i class="fa fa-heart" style="color: red;"></i> <!-- Filled star for favourite -->
                                                     @else
                                                         <i class="fa fa-heart-o"></i> <!-- Empty star for not favourite -->

@@ -4,13 +4,11 @@ namespace App\Http\Controllers\ApiControllers;
 
 use Exception;
 use App\Models\User;
-use Illuminate\Http\Request;
 use App\Helpers\ErrorHandler;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;

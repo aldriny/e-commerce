@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Helpers\ErrorHandler;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\OrderRequest;
+use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
@@ -20,28 +21,30 @@ class OrderController extends Controller
 
     public function store(OrderRequest $request)
     {
-        DB::beginTransaction();
         try{
-            $order = Auth::user()->orders()->create([
-                'total' => $this->calculateTotal($request->products),
-                'status' => 'pending'
-            ]);
-            
-            //create order items in order_items table (order_id, product_id, price, quantity)
-            foreach ($request->products as $product) {
-                $order->orderItems()->create([
-                    'product_id' => $product['product_id'],
-                    'price' => $product['price'],
-                    'quantity' => $product['quantity']
-                ]);
-            }
-            DB::commit(); 
+            DB::transaction(function () use ($request) {
+                $order = Auth::user()->orders()->create([
+                    'total' => $this->calculateTotal($request->products),
+                    'status' => 'pending'
+                ]);  
+                //create order items in order_items table (order_id, product_id, price, quantity)
+                $orderItems = [];
+                foreach ($request->products as $product) {
+                    $orderItems[] = [
+                        'order_id' => $order->id,
+                        'product_id' => $product['product_id'],
+                        'price' => $product['price'],
+                        'quantity' => $product['quantity'],
+                        'created_at' => now(),
+                        'updated_at' => now()                    
+                    ];
+                }
+                OrderItem::insert($orderItems);
+            });
             session()->forget('cart');
-
             return redirect()->route('cart.index')->with('success', 'Order Placed successfully');
         }
         catch (Exception $e) {
-            DB::rollBack();
             return $this->errorHandler->handleException($e,'Error placing order');
         }        
 

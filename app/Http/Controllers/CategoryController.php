@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Exception;
 use App\Models\Category;
 use App\Helpers\ErrorHandler;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {   
@@ -28,11 +29,10 @@ class CategoryController extends Controller
     public function show($id)
     {
         try {
-            $category = Category::with(['products' => function($query){
-                $query->paginate(9);
-            }])->findOrFail($id);
+            $category = Category::findOrFail($id);
             $products = $category->products()->paginate(9);
-            return view('categories.show', ['category' => $category, 'products' => $products]);
+            $favourites = Auth::check() ? Auth::user()->favourites()->pluck('product_id')->toArray() : [];
+            return view('categories.show', ['category' => $category, 'products' => $products,'favourites' => $favourites]);
         }
         catch (Exception $e) {
             return $this->errorHandler->handleException($e, 'Error fetching category');

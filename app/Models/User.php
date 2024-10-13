@@ -69,14 +69,14 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Product::class, 'Favourites', 'user_id', 'product_id');
     }
-    
-    public function isFavourite($productId)
-    {
-        return $this->favourites()->where('product_id', $productId)->exists();
-    }
 
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function cartItems()
+    {
+        return $this->hasManyThrough(CartItem::class, Cart::class, 'user_id', 'cart_id', 'id', 'id');
     }
 }

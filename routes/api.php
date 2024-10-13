@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiControllers\AuthController;
+use App\Http\Controllers\ApiControllers\CartController;
 use App\Http\Controllers\ApiControllers\ProductController;
 use App\Http\Controllers\ApiControllers\CategoryController;
 
@@ -19,6 +20,14 @@ Route::controller(ProductController::class)->group(function () {
 Route::controller(CategoryController::class)->group(function () {
     Route::get('/categories', 'index');
     Route::get('/categories/{id}', 'show');
+});
+
+//require authenticated user
+Route::middleware('auth:sanctum')->group(function () {
+    Route::controller(CartController::class)->group(function () {
+        Route::get('/cart/create', 'index');
+        Route::post('/cart/create/{productId}', 'store');
+    });
 });
 
 // require authenticated user and to be admin

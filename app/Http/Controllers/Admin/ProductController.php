@@ -48,7 +48,7 @@ class ProductController extends Controller
                 $validatedData['image'] = Storage::putFile('products',$request->file('image'));
             }
             Product::create($validatedData);
-            return redirect()->route('products.index')->with('success','Product created successfully');
+            return redirect()->route('admin.products.index')->with('success','Product created successfully');
         }
         catch(Exception $e){
             return $this->errorHandler->handleException($e,'Error creatinf product');
@@ -88,7 +88,7 @@ class ProductController extends Controller
                 $validatedData['image'] = Storage::putFile('products',$request->file('image'));
             }
             $product->update($validatedData);
-            return redirect()->route('products.index')->with('success','Product updated successfully');
+            return redirect()->route('admin.products.index')->with('success','Product updated successfully');
         }
         catch(Exception $e){
             return $this->errorHandler->handleException($e,'Error updating product');
@@ -98,8 +98,10 @@ class ProductController extends Controller
     public function destroy($id)
     {
         try{
-            Product::findorFail($id)->delete();
-            return redirect()->route('products.index')->with('success','Product deleted successfully');
+            $product = Product::findOrFail($id);
+            Storage::delete($product->image);
+            $product->delete();
+            return redirect()->route('admin.products.index')->with('success','Product deleted successfully');
         }
         catch(Exception $e){
             return $this->errorHandler->handleException($e,'Error deleting product');
