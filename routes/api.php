@@ -25,8 +25,10 @@ Route::controller(CategoryController::class)->group(function () {
 //require authenticated user
 Route::middleware('auth:sanctum')->group(function () {
     Route::controller(CartController::class)->group(function () {
-        Route::get('/cart/create', 'index');
+        Route::get('/cart', 'index');
         Route::post('/cart/create/{productId}', 'store');
+        Route::put('/cart/update/{productId}', 'update');
+        Route::delete('/cart/delete/{productId}', 'destroy');
     });
 });
 

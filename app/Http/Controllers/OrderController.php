@@ -22,7 +22,7 @@ class OrderController extends Controller
     public function store(OrderRequest $request)
     {
         try{
-            DB::transaction(function () use ($request) {
+             DB::transaction(function () use ($request) {
                 $order = Auth::user()->orders()->create([
                     'total' => $this->calculateTotal($request->products),
                     'status' => 'pending'
@@ -40,8 +40,8 @@ class OrderController extends Controller
                     ];
                 }
                 OrderItem::insert($orderItems);
+                session()->forget('cart');
             });
-            session()->forget('cart');
             return redirect()->route('cart.index')->with('success', 'Order Placed successfully');
         }
         catch (Exception $e) {
