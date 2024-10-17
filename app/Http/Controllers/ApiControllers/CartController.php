@@ -62,7 +62,7 @@ class CartController extends Controller
         // get validated data
         $orderedQuantity = $request->validated()['quantity'];
         try {
-            return DB::transaction(function () use ($orderedQuantity, $id) {
+            $cart = DB::transaction(function () use ($orderedQuantity, $id) {
                 // get quantity from request and check against stock
                 $product = Product::findOrFail($id);
                 if ($orderedQuantity > $product->quantity) {
@@ -76,11 +76,13 @@ class CartController extends Controller
                     ['product_id' => $id],
                     ['quantity' => $orderedQuantity]
                 );
-                return response()->json([
-                    'message' => 'Product added to cart successfully',
-                    'cart_items' => $cart->cartItems,
-                ]);
+                $cart = $cart->load('cartItems');
+                return $cart;
             });
+            return response()->json([
+                'message' => 'Product added to cart successfully',
+                'cart' => $cart,
+            ]);
         } catch (Exception $e) {
             return $this->errorHandler->handleException($e);
         }
@@ -138,7 +140,6 @@ class CartController extends Controller
                 $cartItem->delete();
                 return response()->json([
                     'message' => 'Product removed from cart successfully',
-                    'cart_items' => $cart->cartItems,
                 ]);
             } else {
                 return response()->json([

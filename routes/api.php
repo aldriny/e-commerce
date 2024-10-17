@@ -5,7 +5,7 @@ use App\Http\Controllers\ApiControllers\AuthController;
 use App\Http\Controllers\ApiControllers\CartController;
 use App\Http\Controllers\ApiControllers\ProductController;
 use App\Http\Controllers\ApiControllers\CategoryController;
-
+use App\Http\Controllers\ApiControllers\OrderController;
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('/register', 'register');
@@ -13,35 +13,18 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/logout', 'logout')->middleware('auth:sanctum');
 });
 
-Route::controller(ProductController::class)->group(function () {
-    Route::get('/products', 'index');
-    Route::get('/products/{id}', 'show');
-});
-Route::controller(CategoryController::class)->group(function () {
-    Route::get('/categories', 'index');
-    Route::get('/categories/{id}', 'show');
-});
+Route::apiResource('products', ProductController::class)->only(['index', 'show']);
+Route::apiResource('categories', CategoryController::class)->only(['index', 'show']);
 
 //require authenticated user
 Route::middleware('auth:sanctum')->group(function () {
-    Route::controller(CartController::class)->group(function () {
-        Route::get('/cart', 'index');
-        Route::post('/cart/create/{productId}', 'store');
-        Route::put('/cart/update/{productId}', 'update');
-        Route::delete('/cart/delete/{productId}', 'destroy');
-    });
+    Route::apiResource('cart', CartController::class)->except(['store','show']);
+    Route::post('/cart/{productId}', [CartController::class,'store']);
+    Route::apiResource('orders', OrderController::class)->except(['update']);
 });
 
 // require authenticated user and to be admin
 Route::middleware(['auth:sanctum', 'api.admin'])->group(function () {
-    Route::controller(ProductController::class)->group(function () {
-        Route::post('/products/create', 'store');
-        Route::put('/products/edit/{id}', 'update');
-        Route::delete('/products/{id}', 'destroy');
-    });
-    Route::controller(CategoryController::class)->group(function () {
-        Route::post('/categories/create', 'store');
-        Route::put('/categories/edit/{id}', 'update');
-        Route::delete('/categories/{id}', 'destroy');
-    });
+    Route::apiResource('products', ProductController::class)->except(['index', 'show']);
+    Route::apiResource('categories', CategoryController::class)->except(['index', 'show']);
 });

@@ -90,7 +90,9 @@ class ProductController extends Controller
     {
         try {
             $product = Product::findOrFail($id);
-            Storage::delete($product->image);
+            if ($product->image && Storage::exists($product->image)) {
+                Storage::delete($product->image);
+            }
             $product->delete();
             return response()->json([
                 'message' => 'Product deleted successfully',
